@@ -5,7 +5,7 @@ public class labb2 {
 
     public static void main(String[] args) throws FileNotFoundException  {
         
-        String pifPath = "pif_1.txt";
+        String pifPath = "pif_2.txt";
         ArrayList <String> SplitFile = new ArrayList<String>();
         BufferedReader read = null;
         try {
@@ -48,20 +48,9 @@ public class labb2 {
 
     return AlgoritmVal;
     }
-
     public static  int FirstComeFirstServe(ArrayList <String> InputArray){
 
         int length = InputArray.size();
-        ArrayList <Integer> tmpArray = new ArrayList<Integer>();
-        ArrayList <String> FinalArray = new ArrayList<String>();
-        FinalArray.add("PID ID");
-        FinalArray.add("Wait Time");
-        FinalArray.add("Turnaround Time");
-        int TurnAroudTime = 0;
-        int WaitingTime = 0;
-        float AvrageTT = 0;
-        float AvrageWT = 0;
-        int indx = 0;
 
          for(int j = 0; j < length-3;j+=3){
             for(int i = 0;i < length-j-3;i+=3){
@@ -78,66 +67,14 @@ public class labb2 {
                 }
             }
         }
-        for(String i: InputArray){
-            tmpArray.add(Integer.parseInt(i));
-        }
-        for(int i = 0; i < length; i+=3){
-            if(i == 0){
-                WaitingTime = 0;
-                TurnAroudTime = WaitingTime + tmpArray.get(i+2);
-            }
-            else if(tmpArray.get(i+1) >= tmpArray.get(i-1)+tmpArray.get(i-2)){
-                WaitingTime = 0;
-                TurnAroudTime = WaitingTime + tmpArray.get(i+2); 
-            }
-            else{
-                WaitingTime = (tmpArray.get(i-2) + Integer.parseInt(FinalArray.get(i-1)) - tmpArray.get(i+1));
-                TurnAroudTime =WaitingTime + tmpArray.get(i+2);
-            }
-
-            FinalArray.add(InputArray.get(i));
-            FinalArray.add(Integer.toString(WaitingTime));
-            TurnAroudTime = WaitingTime + Integer.parseInt(InputArray.get(i+2));
-            FinalArray.add(Integer.toString(TurnAroudTime));
-            AvrageTT = AvrageTT + TurnAroudTime;
-            AvrageWT = AvrageWT + WaitingTime; 
-        }
-
-  for(int j = 3; j < FinalArray.size();j+=3){
-            for(int i = 3;i < FinalArray.size()-j;i+=3){
-                if(Integer.parseInt(FinalArray.get(i)) > Integer.parseInt(FinalArray.get(i+3))){
-                    String tmp0 = FinalArray.get(i);
-                    String tmp1 = FinalArray.get(i+1);
-                    String tmp2 = FinalArray.get(i+2);
-                    FinalArray.set(i,FinalArray.get(i+3));
-                    FinalArray.set(i+1,FinalArray.get(i+4));
-                    FinalArray.set(i+2,FinalArray.get(i+5));
-                    FinalArray.set(i+3,tmp0);
-                    FinalArray.set(i+4,tmp1);
-                    FinalArray.set(i+5,tmp2);
-                }
-            }
-        }
-        for(String i: FinalArray){
-            System.out.print(i + "\t");
-            indx++;
-            if(indx == 3){
-                System.out.println();
-                indx = 0;
-            }
-
-        }
-            System.out.println("Avrage Turnaround time: " + AvrageTT/(FinalArray.size()/3));
-            System.out.println("Avrage Wait time: " + AvrageWT/(FinalArray.size()/3));
+        Calculator(InputArray);
 
     return 0;
     }
-
     public static int ShortestJobFirst(ArrayList <String> InputArray){
 
         int CurrentTime = 0;
         ArrayList <String> QueArray = new ArrayList<String>();
-        ArrayList <String> FinalArray = new ArrayList<String>();
         ArrayList <String> CalculatableArray = new ArrayList<String>();
         int loop = InputArray.size();
 
@@ -151,6 +88,22 @@ public class labb2 {
                     QueArray.add(InputArray.get(i+1));
                     QueArray.add(InputArray.get(i+2));
                 }
+            }
+            if(QueArray.size() == 0){
+                int newCurrentTime = 0;
+                for(int i = 0; i < InputArray.size()-3;i+=3){
+                    if(Integer.parseInt(InputArray.get(i+1)) < Integer.parseInt(InputArray.get(i+4))){
+                        newCurrentTime = Integer.parseInt(InputArray.get(i+1));
+                    }
+                }
+                CurrentTime = newCurrentTime;
+                for(int i = 0; i < InputArray.size(); i +=3){
+                    if(Integer.parseInt(InputArray.get(i+1)) <= CurrentTime ){
+                        QueArray.add(InputArray.get(i));
+                        QueArray.add(InputArray.get(i+1));
+                        QueArray.add(InputArray.get(i+2));
+                    } 
+                }               
             }
 
             for(int j = 0; j < QueArray.size()-3;j+=3){
@@ -182,15 +135,81 @@ public class labb2 {
                 }
             }
         }
+        for(String h: CalculatableArray){
+            System.out.println(h);
+        } 
+        Calculator(CalculatableArray);
 
-        for(int i = 0; i < CalculatableArray.size(); i+=3){
-            System.out.println(CalculatableArray.get(i));
+        return 0;
+    }
+
+    public static int Calculator(ArrayList <String> InputArray){
+        int WaitingTime = 0;
+        int TurnAroudTime = 0;
+        int indx = 0;
+        float AvrageTT = 0;
+        float AvrageWT = 0;
+        ArrayList <String> FinalArray = new ArrayList<String>();
+        ArrayList <Integer> tmpArray = new ArrayList<Integer>();       
+
+
+         for(String i: InputArray){
+            tmpArray.add(Integer.parseInt(i));
         }
+        for(int i = 0; i < tmpArray.size(); i+=3){
+            if(i == 0){
+                WaitingTime = 0;
+                TurnAroudTime = WaitingTime + tmpArray.get(i+2);
+            }
+            else if(tmpArray.get(i+1) >= tmpArray.get(i-1)+tmpArray.get(i-2)+WaitingTime){
+                WaitingTime = 0;
+                TurnAroudTime = WaitingTime + tmpArray.get(i+2); 
+            }
+            else{
+                WaitingTime = (tmpArray.get(i-2) + Integer.parseInt(FinalArray.get(i-1)) - tmpArray.get(i+1));
+                TurnAroudTime =WaitingTime + tmpArray.get(i+2);
+            }
+
+            FinalArray.add(InputArray.get(i));
+            FinalArray.add(Integer.toString(WaitingTime));
+            TurnAroudTime = WaitingTime + Integer.parseInt(InputArray.get(i+2));
+            FinalArray.add(Integer.toString(TurnAroudTime));
+            AvrageTT = AvrageTT + TurnAroudTime;
+            AvrageWT = AvrageWT + WaitingTime; 
+        }
+          for(int j = 3; j < FinalArray.size();j+=3){
+            for(int i = 3;i < FinalArray.size()-j;i+=3){
+                if(Integer.parseInt(FinalArray.get(i)) > Integer.parseInt(FinalArray.get(i+3))){
+                    String tmp0 = FinalArray.get(i);
+                    String tmp1 = FinalArray.get(i+1);
+                    String tmp2 = FinalArray.get(i+2);
+                    FinalArray.set(i,FinalArray.get(i+3));
+                    FinalArray.set(i+1,FinalArray.get(i+4));
+                    FinalArray.set(i+2,FinalArray.get(i+5));
+                    FinalArray.set(i+3,tmp0);
+                    FinalArray.set(i+4,tmp1);
+                    FinalArray.set(i+5,tmp2);
+                }
+            }
+        }
+        System.out.println("PID ID\t\tWaiting Time\t\tTurnaroundTime");
+        for(String i: FinalArray){
+            System.out.print(i + "\t\t");
+            indx++;
+            if(indx == 3){
+                System.out.println();
+                indx = 0;
+            }
+
+        }
+            System.out.println("Avrage Turnaround time: " + AvrageTT/(FinalArray.size()/3));
+            System.out.println("Avrage Wait time: " + AvrageWT/(FinalArray.size()/3));
 
         return 0;
     }
 
 }
+
 
 
 
