@@ -131,13 +131,10 @@ public class labb2 {
                     InputArray.remove(i);
                     InputArray.remove(i);
                     InputArray.remove(i);
-
                 }
             }
         }
-        for(String h: CalculatableArray){
-            System.out.println(h);
-        } 
+
         Calculator(CalculatableArray);
 
         return 0;
@@ -150,8 +147,17 @@ public class labb2 {
         float AvrageTT = 0;
         float AvrageWT = 0;
         ArrayList <String> FinalArray = new ArrayList<String>();
-        ArrayList <Integer> tmpArray = new ArrayList<Integer>();       
+        ArrayList <Integer> tmpArray = new ArrayList<Integer>();
 
+        for(String p: InputArray){
+            System.out.print(p + "\t\t");
+            indx++;
+            if(indx == 3){
+                System.out.println();
+                indx = 0;
+            }
+
+        }
 
          for(String i: InputArray){
             tmpArray.add(Integer.parseInt(i));
@@ -169,7 +175,7 @@ public class labb2 {
                 WaitingTime = (tmpArray.get(i-2) + Integer.parseInt(FinalArray.get(i-1)) - tmpArray.get(i+1));
                 TurnAroudTime =WaitingTime + tmpArray.get(i+2);
             }
-
+            
             FinalArray.add(InputArray.get(i));
             FinalArray.add(Integer.toString(WaitingTime));
             TurnAroudTime = WaitingTime + Integer.parseInt(InputArray.get(i+2));
@@ -177,8 +183,8 @@ public class labb2 {
             AvrageTT = AvrageTT + TurnAroudTime;
             AvrageWT = AvrageWT + WaitingTime; 
         }
-          for(int j = 3; j < FinalArray.size();j+=3){
-            for(int i = 3;i < FinalArray.size()-j;i+=3){
+        for(int j = 0; j < FinalArray.size()-3;j+=3){
+            for(int i = 0;i < FinalArray.size()-j-3;i+=3){
                 if(Integer.parseInt(FinalArray.get(i)) > Integer.parseInt(FinalArray.get(i+3))){
                     String tmp0 = FinalArray.get(i);
                     String tmp1 = FinalArray.get(i+1);
@@ -192,7 +198,7 @@ public class labb2 {
                 }
             }
         }
-        System.out.println("PID ID\t\tWaiting Time\t\tTurnaroundTime");
+        System.out.println("PID ID\t\tWaiting Time\tTurnaroundTime");
         for(String i: FinalArray){
             System.out.print(i + "\t\t");
             indx++;
@@ -200,14 +206,12 @@ public class labb2 {
                 System.out.println();
                 indx = 0;
             }
-
         }
             System.out.println("Avrage Turnaround time: " + AvrageTT/(FinalArray.size()/3));
             System.out.println("Avrage Wait time: " + AvrageWT/(FinalArray.size()/3));
 
         return 0;
     }
-
 }
 
 
