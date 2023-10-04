@@ -4,7 +4,8 @@ import java.util.*;
 public class labb2 {
 
     public static void main(String[] args) throws FileNotFoundException  {
-        
+
+        Scanner scan = new Scanner(System.in);
         String pifPath = "pif_2.txt";
         ArrayList <String> SplitFile = new ArrayList<String>();
         BufferedReader read = null;
@@ -20,7 +21,7 @@ public class labb2 {
             e.printStackTrace();
         }
         
-        String InputsVal = Inputs();
+        String InputsVal = Inputs(scan);
 
         if(InputsVal.equals("FCFS")){
             FirstComeFirstServe(SplitFile);
@@ -28,6 +29,14 @@ public class labb2 {
         else if(InputsVal.equals("SJF")){
             ShortestJobFirst(SplitFile);
         }
+        else if(InputsVal.equals("RR")){
+            System.out.print("\nHur lång Timeslice vill du ha?\nInput:");
+            int TimeSlice = scan.nextInt();
+            System.out.println("");
+            RoundRobin(SplitFile,TimeSlice);  
+        } 
+        scan.close();          
+       
     }
 
     public static ArrayList<String> ArrayListConverter (ArrayList <String> SplitArray,String Input){
@@ -40,11 +49,9 @@ public class labb2 {
     return ResultArray;
 
     }
-    public static String Inputs(){
-        System.out.println("Vilken Algoritm vill du köra?\n------------------------------\nFirst Come First Serve: FCFS\nShortest Job First: SJF\nRound Robin: RR\n------------------------------\nInput: ");
-        Scanner scan = new Scanner(System.in);
+    public static String Inputs(Scanner scan){
+        System.out.print("Vilken Algoritm vill du köra?\n------------------------------\nFirst Come First Serve: FCFS\nShortest Job First: SJF\nRound Robin: RR\n------------------------------\nInput: ");
         String AlgoritmVal = scan.nextLine();
-        scan.close();
 
     return AlgoritmVal;
     }
@@ -139,7 +146,76 @@ public class labb2 {
 
         return 0;
     }
+   
+    private static int RoundRobin(ArrayList<String> InputArray, int TimeSlice) {
+        ArrayList <Integer> intArray = new ArrayList<Integer>();
+        ArrayList <Integer> CalculatableArray = new ArrayList<Integer>();
+        int CurrentBurstTime = 0;
+ 
+        for(int i = 0; i < InputArray.size();i+=3){
+            intArray.add(Integer.parseInt(InputArray.get(i)));
+            intArray.add(0);
+            intArray.add(Integer.parseInt(InputArray.get(i+2)));  
+        }
 
+        while(intArray.size() != 0){
+
+            for(int i = 0;i <= intArray.size()-3;i += 3){
+
+                CurrentBurstTime = intArray.get(i+2);
+
+                if(intArray.get(i+2) >= TimeSlice){
+                intArray.set(i+2,intArray.get(i+2)-TimeSlice);
+                }
+                else if(CurrentBurstTime < TimeSlice){    
+                intArray.set(i+2,intArray.get(i+2) - CurrentBurstTime);
+                }
+                for(int j = 0;j <= intArray.size()-3;j+=3){
+                    if(intArray.get(i) != intArray.get(j)){
+                        if(TimeSlice > CurrentBurstTime){
+                            intArray.set(j+1,intArray.get(j+1) + CurrentBurstTime);
+                        }
+                        else if(TimeSlice <= CurrentBurstTime){
+                            intArray.set(j+1,intArray.get(j+1)+TimeSlice);
+                        }
+                    }
+                }
+                if(intArray.get(i+2) <= 0){
+                    CalculatableArray.add(intArray.get(i));
+                    CalculatableArray.add(intArray.get(i+1));
+                    CalculatableArray.add(intArray.get(i+2));
+
+                    intArray.remove(i);
+                    intArray.remove(i);
+                    intArray.remove(i);
+                    i-=3;
+                }
+            }
+        }
+        for(int j = 0; j < CalculatableArray.size()-3;j+=3){
+            for(int i = 0;i < CalculatableArray.size()-j-3;i+=3){
+                if(CalculatableArray.get(i) > CalculatableArray.get(i+3)){
+                    int tmp0 = CalculatableArray.get(i);
+                    int tmp1 = CalculatableArray.get(i+1);
+                    int tmp2 = CalculatableArray.get(i+2);
+                    CalculatableArray.set(i,CalculatableArray.get(i+3));
+                    CalculatableArray.set(i+1,CalculatableArray.get(i+4));
+                    CalculatableArray.set(i+2,CalculatableArray.get(i+5));
+                    CalculatableArray.set(i+3,tmp0);
+                    CalculatableArray.set(i+4,tmp1);
+                    CalculatableArray.set(i+5,tmp2);
+                }
+            }
+        }
+        System.out.println("PID ID\tWaiting time\tTurnaround time");
+        for(int i = 0; i < CalculatableArray.size();i+=3){
+            System.out.print(CalculatableArray.get(i) + "\t");
+            System.out.print(CalculatableArray.get(i+1) + "\t\t");
+            System.out.print((CalculatableArray.get(i+1)+Integer.parseInt(InputArray.get(i+2)))+"\n");
+        }
+
+        return 0;
+    }
     public static int Calculator(ArrayList <String> InputArray){
         int WaitingTime = 0;
         int TurnAroudTime = 0;
