@@ -5,11 +5,15 @@ public class labb2 {
 
     public static void main(String[] args) throws FileNotFoundException  {
 
+        System.out.print("\033c");
         Scanner scan = new Scanner(System.in);
-        String pifPath = "pif_2.txt";
         ArrayList <String> SplitFile = new ArrayList<String>();
         BufferedReader read = null;
-        try {
+        
+        String InputsVal = Inputs(scan);
+        String pifPath = PifVal(scan);
+
+         try {
             String line;
             read = new BufferedReader(new FileReader(pifPath));
 
@@ -20,8 +24,6 @@ public class labb2 {
         catch (Exception e) {
             e.printStackTrace();
         }
-        
-        String InputsVal = Inputs(scan);
 
         if(InputsVal.equals("FCFS")){
             FirstComeFirstServe(SplitFile);
@@ -30,6 +32,7 @@ public class labb2 {
             ShortestJobFirst(SplitFile);
         }
         else if(InputsVal.equals("RR")){
+            System.out.print("\033c");
             System.out.print("\nHur lång Timeslice vill du ha?\nInput:");
             int TimeSlice = scan.nextInt();
             System.out.println("");
@@ -52,8 +55,34 @@ public class labb2 {
     public static String Inputs(Scanner scan){
         System.out.print("Vilken Algoritm vill du köra?\n------------------------------\nFirst Come First Serve: FCFS\nShortest Job First: SJF\nRound Robin: RR\n------------------------------\nInput: ");
         String AlgoritmVal = scan.nextLine();
-
+        System.out.print("\033c");
     return AlgoritmVal;
+    }
+
+    public static String PifVal(Scanner scan){
+        System.out.print("\033c");
+        String pif = "";
+        System.out.println("Vill du välja bland standardiserade pif filer?\ny/n");
+        System.out.print("Input:");
+        String val = scan.nextLine();
+        if(val.equals("y")){
+        System.out.print("\033c");
+        System.out.print("Vilken pif fil vill du använda?\n------------------------------\n");
+        System.out.println("1. pif_1.txt\n2. pif_2.txt\n3. pif_3.txt\n4. pif_4.txt\n5. pif_5.txt\n------------------------------\nFyll i namnet på den fil du vill välja ");
+        System.out.print("Input:");
+        pif = scan.nextLine();
+        }
+        else if(val.equals("n")){
+            System.out.print("\033c");
+            System.out.print("Fyll i Sökvägen för din valda pif fil\n");
+            System.out.print("Input:");
+            pif = scan.nextLine();
+        }
+        else{
+            PifVal(scan);
+        }
+
+        return pif;
     }
     public static  int FirstComeFirstServe(ArrayList <String> InputArray){
 
@@ -151,6 +180,8 @@ public class labb2 {
         ArrayList <Integer> intArray = new ArrayList<Integer>();
         ArrayList <Integer> CalculatableArray = new ArrayList<Integer>();
         int CurrentBurstTime = 0;
+
+        System.out.print("\033c");        
  
         for(int i = 0; i < InputArray.size();i+=3){
             intArray.add(Integer.parseInt(InputArray.get(i)));
@@ -225,15 +256,8 @@ public class labb2 {
         ArrayList <String> FinalArray = new ArrayList<String>();
         ArrayList <Integer> tmpArray = new ArrayList<Integer>();
 
-        for(String p: InputArray){
-            System.out.print(p + "\t\t");
-            indx++;
-            if(indx == 3){
-                System.out.println();
-                indx = 0;
-            }
+        System.out.print("\033c");
 
-        }
 
          for(String i: InputArray){
             tmpArray.add(Integer.parseInt(i));
